@@ -1,0 +1,75 @@
+<div class="footer__links {{block.settings.horizontalAlignment-}}">
+{%- if block.settings.heading != blank -%}<span class="footer__title">{{block.settings.heading}}</span>{%-endif-%}
+{% for link in linklists[block.settings.links].links %}
+<a href="{{ link.url }}">{% if link.title == 'Chat' %}<span><img style="width:16px; vertical-align: middle;    margin-right: 10px;" src="https://cdn.shopify.com/s/files/1/0829/1296/8986/files/chat-icon.png?v=1696837361"></span>{% endif %}
+  {% if link.title == 'Contact Us' %}<span><img style="width:16px; vertical-align: middle;    margin-right: 10px;" src="https://cdn.shopify.com/s/files/1/0829/1296/8986/files/email.png?v=1696837360"></span>{% endif %}
+  {% if link.title == 'Text' %}<span><img style="width:14px; vertical-align: middle;    margin-right: 10px;" src="https://cdn.shopify.com/s/files/1/0829/1296/8986/files/mobile-icon.png?v=1696837360"></span>{% endif %}
+  {% if link.title == 'Track Order' %}<span><img style="width:16px; vertical-align: middle;    margin-right: 10px;" src="https://cdn.shopify.com/s/files/1/0829/1296/8986/files/track-order.png?v=1696837360"></span>{% endif %}
+  {% if link.title == 'Returns & Exchanges' %}<span><img style="width:16px; vertical-align: middle;    margin-right: 10px;" src="https://cdn.shopify.com/s/files/1/0829/1296/8986/files/return-exchange-icon.png?v=1696837360"></span>{% endif %}
+  {{ link.title }}</a>
+{% else %}
+    {% for i in (1..4) %}
+        <a href="#">Footer link {{i}}</a>
+    {% endfor %}
+{% endfor %}
+</div>
+
+{% comment %}
+{% blockdef %}
+{
+    "name": "Links",
+    "type": "footerLinks",
+    "settings": [
+        {
+            "id": "width",
+            "label": "Width",
+            "type": "select",
+            "options": [
+                {"value": "auto", "label": "Auto"},
+                {"value": "12", "label": "100%"},
+                {"value": "9", "label": "75%"},
+                {"value": "8", "label": "66%"},
+                {"value": "6", "label": "50%"},
+                {"value": "4", "label": "33%"},
+                {"value": "3", "label": "25%"},
+                {"value": "1-5", "label": "20%"}
+            ],
+            "default": "auto"
+        },
+        {
+            "type": "select",
+            "id": "horizontalAlignment",
+            "label": "Content alignment (left to right)",
+            "options": [
+                {"value": "start", "label": "Left"},
+                {"value": "center", "label": "Center"},
+                {"value": "end", "label": "Right"}
+            ],
+            "default": "center"
+        },
+        {
+            "type": "select",
+            "id": "verticalAlignment",
+            "label": "Content alignment (top to bottom)",
+            "options": [
+                {"value": "top", "label": "Top"},
+                {"value": "middle", "label": "Middle"},
+                {"value": "bottom", "label": "Bottom"}
+            ],
+            "default": "middle"
+        },
+        {
+            "type": "text",
+            "id": "heading",
+            "label": "Title",
+            "default": "TITLE"
+        },
+        {
+            "id": "links",
+            "label": "Links",
+            "type": "link_list"
+        }
+    ]
+}
+{% endblockdef %}
+{% endcomment %}

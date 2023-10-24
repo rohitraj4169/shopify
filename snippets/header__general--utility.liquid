@@ -1,0 +1,200 @@
+
+<ul class="currency-list">
+    <li class="init"><img src="https://thermorecoverywear.com/cdn/shop/files/usa_400x.png?v=1696838411"><span>USA</span></li>
+    <li data-value="USA" ><img src="https://thermorecoverywear.com/cdn/shop/files/usa_400x.png?v=1696838411">USA</li>
+    <li data-value="CAD"><img src="https://cdn.shopify.com/s/files/1/0829/1296/8986/files/cad_1.png?v=1697612717">CAD</li>    
+    <li data-value="GBP"><img src="https://cdn.shopify.com/s/files/1/0829/1296/8986/files/gbp_1.png?v=1697612717">GBP</li>
+    <li data-value="EUR"><img src="https://cdn.shopify.com/s/files/1/0829/1296/8986/files/eur_1.png?v=1697612717">EUR</li>
+</ul>
+
+{% form 'currency' %}
+   {% comment %} {{ form | currency_selector }} {% endcomment %}
+  
+  <select data-currency-selector onchange="BoosterTheme.ELEMENTS.convertCurrencyChange(this)" style="width: 100%" class="defaultCurrencyCls">
+                {% assign currencyArr = settings.enabledCurrencies | upcase | replace: ' ', '' | split: ',' %}
+                {% unless currencyArr contains shop.currency %}
+                    <option value="{{shop.currency}}">
+                        {{shop.currency}}
+                    </option>
+                {% endunless %}
+                {% for currency in currencyArr %}
+                    <option value="{{currency}}">
+                        {{currency}}
+                    </option>
+                {% endfor %}
+                </select>
+  {% endform %}
+
+{% if hideSearch != true %}
+<span class="search__icon" onclick="BoosterTheme.ELEMENTS.openSearch(this)">{% render 'get-icon', icon: 'search' %}</span>
+{% endif %}
+
+{% if settings.shopCurrency != 'none' and mobile != true or shop.enabled_locales.size > 1 and settings.multilanguage and mobile != true %}
+<div class="i18n__button">
+    <label for="i18n__button">{% render 'get-icon', icon: 'dollar-alt' %}</label>
+    <input type="checkbox" class="hide" id="i18n__button">
+    <div class="i18n__holder">
+        {% if shop.enabled_locales.size > 1 and settings.multilanguage %}
+            <div class="i18n__title top">{{'i18n.language'|t}}</div>
+            <select onchange="BoosterTheme.ELEMENTS.languageChange(this)" data-language-selector>
+                {% for locale in shop.enabled_locales %}
+                <option
+                {% unless locale.primary %}
+                    value="{{locale.root_url}}"
+                {% else %}
+                    value="{{locale.root_url}}"
+                {% endunless %}
+                data-locale="{{locale.iso_code}}"
+                {% if locale.iso_code == request.locale.iso_code %}selected{% endif %}>
+                    {{ locale.name }}
+                </option>
+                {% endfor %}
+            </select>           
+        {% endif %}
+        {% unless settings.shopCurrency == 'none' %}
+            <div class="i18n__title">{{'i18n.currency'|t}}</div>
+            {% if settings.shopCurrency == 'convert' %}
+                <select data-currency-selector onchange="BoosterTheme.ELEMENTS.convertCurrencyChange(this)" style="width: 100%">
+                {% assign currencyArr = settings.enabledCurrencies | upcase | replace: ' ', '' | split: ',' %}
+                {% unless currencyArr contains shop.currency %}
+                    <option value="{{shop.currency}}">
+                        {{shop.currency}}
+                    </option>
+                {% endunless %}
+                {% for currency in currencyArr %}
+                    <option value="{{currency}}">
+                        {{currency}}
+                    </option>
+                {% endfor %}
+                </select>
+            {% else %}
+                {% form 'currency' %}
+                    <input class="hide" name="currency" id="setCurrency">
+                    <select onchange="BoosterTheme.ELEMENTS.submitCurrencyChange(this)" style="width: 100%">
+                    {% for currency in shop.enabled_currencies %}
+                        <option value="{{currency.iso_code}}" {% if currency == cart.currency %}selected{% endif %}>
+                            {{currency.iso_code}} ({{currency.symbol}})
+                        </option>
+                    {% endfor %}
+                    </select>
+                {% endform %}
+            {% endif %}
+        {% endunless %}
+    </div>
+    <label class="overlay" for="i18n__button"></label>
+</div>
+{% endif %}
+
+  {% comment %}
+{% assign root_url = routes.root_url %}
+{% assign search_url = root_url | append: 'search' %}
+{% if root_url != '/' %}
+    {% assign search_url = root_url | append: '/search' %}
+{% endif %} 
+{% endcomment %}
+  
+ <!-- <div class="col-6 middle center searchHeader">
+                <div data-search-container class="search__container search__container--inline col-min col-md-9 start-md hide-mobile">
+                    <div class="search__container--sub">
+                    <span onclick="BoosterTheme.ELEMENTS.openSearch(this)" class="search__icon hide-mobile">{% render 'get-icon', icon: 'search' %}</span>
+                    <form method="get" action="{{search_url}}">
+                        <span onclick="BoosterTheme.ELEMENTS.submitSearch(this)" class="search__icon--submit" aria-label="Search">{% render 'get-icon', icon: 'search' %}</span>
+                        <input placeholder="search" autocomplete="off" name="q" onfocus="BoosterTheme.ELEMENTS.openSearch(this)" type="search" data-search>
+                    </form>
+                    </div>
+                    <div class="search__overlay" onclick="BoosterTheme.ELEMENTS.closeSearch(this)"></div>
+                    <div class="search__results" data-search-suggest>
+                    </div>
+                </div>
+            </div> -->
+       
+<div class="user__button">
+    <label for="user__button"><a class="" href="{{ routes.account_login_url }}"><img style="width:20px;" src="https://cdn.shopify.com/s/files/1/0829/1296/8986/files/user_1.png?v=1696832185" ></a> <!--<a class="user__link" href="{{ routes.account_login_url }}">Sign In </a>--></label>
+    <!-- <input type="checkbox" class="hide" id="user__button">
+    <div class="user__holder">
+        {% if customer %}
+            <a class="user__link" href="{{ routes.account_url }}">{% render 'get-icon', icon: 'user' %}Account</a>
+            <a class="user__link" href="{{ routes.account_logout_url }}">{% render 'get-icon', icon: 'signout' %}{{'navigation.buttons.log_out'|t}}</a>
+        {% else %}
+            <a class="user__link" href="{{ routes.account_login_url }}">{% render 'get-icon', icon: 'signin' %}{{'navigation.buttons.sign_in'|t}} </a>
+            <a class="user__link" href="{{ routes.account_register_url }}">{% render 'get-icon', icon: 'signup' %}{{'navigation.buttons.sign_up'|t}}</a>
+        {% endif %}
+        <a class="user__link" href="{{ routes.cart_url }}">{% render 'get-icon', icon: 'shopping-bag' %}{{'general.buttons.view_cart' | t}}</a>
+    </div>
+    <label class="overlay" for="user__button"></label> -->
+</div>
+{% if showCart == true %}
+{% unless settings.cartStyle == 'none' %}
+<div class="minicart__button minicart__button--{{section.settings.cartIcon}}">
+    <input type="checkbox" data-minicart-input id="minicart__button--{{section.id}}{% if mobile %}-mobile{% endif %}">
+    <label class="overlay" for="minicart__button--{{section.id}}{% if mobile %}-mobile{% endif %}"></label>
+    <label class="minicart__label" for="minicart__button--{{section.id}}{% if mobile %}-mobile{% endif %}" data-cart-settings="count" data-cart-container>
+        {% comment %}{% render 'get-icon', icon: section.settings.cartIcon %}{% endcomment %}<img style="width:24px;" src="https://cdn.shopify.com/s/files/1/0829/1296/8986/files/shopping-cart-1.png?v=1696832429"><span class="item__count" data-count>0</span>
+    </label>
+    <div class="minicart__holder minicart--{{-settings.cartStyle}}" data-cart-settings="product-list" data-cart-container><div data-product-list></div></div>
+</div>
+{% else %}
+<div class="minicart__button minicart__button--{{section.settings.cartIcon}}">
+    <a href="{{routes.cart_url}}" class="minicart__label" for="minicart__button--{{section.id}}" data-cart-settings="count" data-cart-container>
+        {% comment %}{% render 'get-icon', icon: section.settings.cartIcon %}{% endcomment %}
+        <img src="https://cdn.shopify.com/s/files/1/0829/1296/8986/files/shopping-cart-1.png?v=1696832429" style="width:24px;">
+      <span class="item__count" data-count>0</span>
+    </a>
+</div>
+{% endunless %}
+{% endif %}
+<script>
+    $("div").click(function(){
+   // alert("jhdgsajgd");
+   //$(".currency-list.opendropdown li:not(.init)").css("display", "none");
+});
+  var allOptions = $("ul").children('li:not(.init)');
+  $( document ).ready(function() {
+      var activateCurrencyCode = $('#s--template--21217325678874__16265529277430f275 .card__price').attr("data-currency");
+   // alert(activateCurrencyCode);
+     if(activateCurrencyCode != 'USD'){
+     
+        $(".currency-list li").each(function() {
+        if ($(this).attr("data-value") === activateCurrencyCode ) {
+          $(this).addClass("selected");
+          if(activateCurrencyCode == 'CAD'){
+            $(".currency-list li.init").replaceWith('<li class="init" style="display: block;"><img src="https://cdn.shopify.com/s/files/1/0829/1296/8986/files/cad_1.png?v=1697612717">CAD</li>');
+          
+          }
+          if(activateCurrencyCode == 'GBP'){
+            $(".currency-list li.init").replaceWith('<li class="init" style="display: block;"><img src="https://cdn.shopify.com/s/files/1/0829/1296/8986/files/gbp_1.png?v=1697612717">GBP</li>');
+          
+          }
+          if(activateCurrencyCode == 'EUR'){
+            $(".currency-list li.init").replaceWith('<li class="init" style="display: block;"><img src="https://cdn.shopify.com/s/files/1/0829/1296/8986/files/eur_1.png?v=1697612717">EUR</li>');
+          
+          }
+           //$(".currency-list li.init").replaceWith('<li class="init" style="display: block;"><img src="https://thermorecoverywear.com/cdn/shop/files/usa_400x.png?v=1696838411">USA</li>');
+          //alert($(this).html());
+        }
+});
+    
+     }
+});
+
+// $("ul.opendropdown").on("click", ".init", function(){
+ 
+//   $(".currency-list li:not(.init)").css("display", "none");
+// });
+$("ul.currency-list").on("click", ".init", function() {
+     $(".currency-list li").css("display", "block");
+     $("ul.currency-list").addClass('opendropdown');
+});
+
+
+$("ul").on("click", "li:not(.init)", function() {
+    allOptions.removeClass('selected');
+    $(this).addClass('selected');
+    $("ul").children('.init').html($(this).html());
+    var currencyValue = $(this).attr("data-value");
+    $('.defaultCurrencyCls').val(currencyValue).change();
+  $(".currency-list li:not(.init)").css("display", "none");
+   $("ul.currency-list").removeClass('opendropdown');
+});
+
+</script>
